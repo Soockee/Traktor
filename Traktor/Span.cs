@@ -10,20 +10,23 @@ namespace Traktor
     public sealed class Span: ISpan
     {
         // Noop
-        public ISpanContext Context => SpanContext.Instance;
+        public ISpanContext Context { get { return spanContext; } }
         public static ISpanContext ContextStatic => SpanContext.Instance;
-        public static ISpan Instance = new Span("test-operation-name", ContextStatic);
+       // public static ISpan Instance = new Span("test-operation-name", ContextStatic, new Dictionary<string, string>());
 
         // Span Fields
         public string operationName;
         public DateTime startTimeStamp;
         public DateTime endTimeStamp;
         public ISpanContext spanContext;
+        public Dictionary<string, string> references;
 
-        public Span(string operationName, ISpanContext spanContext)
+        public Span(string operationName, ISpanContext spanContext, Dictionary<string, string> references)
         {
+            // startTimeStamp = 
             this.operationName = operationName;
             this.spanContext = spanContext;
+            this.references = references;
         }
 
         public void Finish()

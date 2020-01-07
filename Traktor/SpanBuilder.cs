@@ -26,7 +26,7 @@ namespace Traktor
         public ISpanBuilder AddReference(string referenceType, ISpanContext referencedContext)
         {
             if (referencedContext == null) return this;
-            references.Add(referenceType, referencedContext.SpanId);
+            references.Add(referencedContext.SpanId, referenceType);
             return this;
         }
 
@@ -93,7 +93,7 @@ namespace Traktor
         }
 
         public IScope StartActive()
-        { 
+        {
             return tracer.ScopeManager.Activate(Start(), true);
         }
 
@@ -111,11 +111,12 @@ namespace Traktor
             }
             else
             {
+                AddReference(References.ChildOf, tracer.ScopeManager.Active.Span.Context);
                 traceId = tracer.ActiveSpan.Context.TraceId;
             }
             string spanID = Traktor.Util.generateNewId();
             ISpanContext spanContext = new SpanContext(traceId, spanID);
-            Span span = new Span(operationName, spanContext);
+            Span span = new Span(operationName, spanContext, references);
             return span;
         }
 

@@ -23,6 +23,7 @@ namespace Traktor_Test
             Assert.IsNotNull(actualStartTimeStamp);
             
         }
+        [TestMethod]
         public void StartActive()
         {
             string expectedOperationName = "Testoperation";
@@ -32,10 +33,11 @@ namespace Traktor_Test
             string[] actualSpanFields = scope.Span.ToString().Split(";");
 
             Assert.AreEqual(scope.Span, tracer.ActiveSpan);
-            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active);
-            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active);
+            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active.Span);
+            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active.Span);
         }
         //toDo: Check if Dispose is correctly handled
+        [TestMethod]
         public void StartActiveWithBool()
         {
             string expectedOperationName = "Testoperation";
@@ -46,12 +48,41 @@ namespace Traktor_Test
             string[] actualSpanFields = scope.Span.ToString().Split(";");
 
             Assert.AreEqual(scope.Span, tracer.ActiveSpan);
-            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active);
-            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active);
+            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active.Span);
+            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active.Span);
         }
+        [TestMethod]
         public void AddReference()
         {
-           
+            string expectedOperationName_1 = "Testoperation_1";
+            string expectedOperationName_2 = "Testoperation_2";
+            string expectedOperationName_3 = "Testoperation_3";
+            string expectedOperationName_4 = "Testoperation_4";
+            Tracer tracer = new Tracer();
+            IScope first_scope;
+            using (IScope scope = tracer.BuildSpan(expectedOperationName_1).StartActive()) {
+                first_scope = scope;
+                Assert.AreEqual(scope.Span, tracer.ActiveSpan);
+            };
+            using (IScope scope = tracer.BuildSpan(expectedOperationName_2).StartActive())
+            {
+                Assert.AreEqual(scope.Span, tracer.ActiveSpan);
+                Assert.AreNotEqual(scope.Span, first_scope);
+            };
+            using (IScope scope = tracer.BuildSpan(expectedOperationName_3).StartActive())
+            {
+                ISpanBuilder builder = tracer.BuildSpan(expectedOperationName_4);
+                using (IScope childScope = builder.StartActive())
+                {
+                    Assert.AreEqual(childScope.Span, tracer.ActiveSpan);
+                    Assert.AreNotEqual(scope.Span, tracer.ActiveSpan);
+                    Assert.AreNotEqual(scope.Span, childScope.Span);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.SpanId==childScope.Span.Context.SpanId);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.TraceId == childScope.Span.Context.TraceId);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.TraceId == scope.Span.Context.TraceId);
+                    Assert.IsFalse(tracer.ActiveSpan.Context.SpanId == scope.Span.Context.SpanId);
+                };
+            };
         }
 
     }
