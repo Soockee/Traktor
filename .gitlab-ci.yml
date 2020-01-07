@@ -1,0 +1,18 @@
+image: mono:latest
+
+stages:
+    - build
+    - test
+    - publish
+
+variables:
+        solution: "Traktor.sln"
+
+before_script:
+    - nuget restore
+build:
+        state: build
+        script:
+                -  msbuild /p:Configuration=Release $solution
+
+
