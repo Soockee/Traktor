@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ScopeManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OpenTracing" Version="0.12.1" />
   </ItemGroup>
 

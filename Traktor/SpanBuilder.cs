@@ -88,12 +88,12 @@ namespace Traktor
 
         public IScope StartActive()
         {
-            return ScopeManager.Scope.Instance;
+            return null;
         }
 
         public IScope StartActive(bool finishSpanOnDispose)
         {
-            return ScopeManager.Scope.Instance;
+            return null;
         }
 
         public ISpan Start()
@@ -105,7 +105,7 @@ namespace Traktor
             }
             else
             {
-                traceId = tracer.ScopeManager.Active.Span.Context.TraceId;
+                traceId = tracer.ActiveSpan.Context.TraceId;
             }
             string spanID = Traktor.Util.generateNewId();
             ISpanContext spanContext = new SpanContext(traceId, spanID);

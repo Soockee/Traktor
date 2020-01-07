@@ -14,8 +14,8 @@ namespace Traktor_Test
             tracer.ScopeManager.Activate(span,false);
 
 
-            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active);
-            Assert.AreEqual(span, tracer.ScopeManager.Active);
+            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active.Span);
+            Assert.AreEqual(span, tracer.ScopeManager.Active.Span);
         }
     }
 }

@@ -11,30 +11,19 @@ namespace Traktor
     {
         public static readonly IScopeManager Instance = new ScopeManager();
 
-        public List<IScope> inactiveScopes;
-
         private IScope active;
-
+        
         public IScope Active { get { return active; } }
 
         public ScopeManager()
         {
-            inactiveScopes = new List<IScope>();
+           
         }
 
         public IScope Activate(ISpan span, bool finishSpanOnDispose)
         {
-            IScope tmp = inactiveScopes.Find(scope => scope.Span == span);
-            inactiveScopes.Add(active);
-            ISpan newParent = active.Span;
-            if (inactiveScopes.Remove(tmp))
-            {
-               // span.Context.TraceId = active.Span.Context.TraceId;
-                active = tmp;
-            }
-            else {
-                active = new Scope(span);
-            }
+            ISpan parent = active?.Span;
+            active = new Scope(span);
             return active;
         }
 
