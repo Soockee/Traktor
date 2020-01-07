@@ -23,5 +23,36 @@ namespace Traktor_Test
             Assert.IsNotNull(actualStartTimeStamp);
             
         }
+        public void StartActive()
+        {
+            string expectedOperationName = "Testoperation";
+            Tracer tracer = new Tracer();
+            ISpanBuilder builder = tracer.BuildSpan(expectedOperationName);
+            IScope scope = builder.StartActive();
+            string[] actualSpanFields = scope.Span.ToString().Split(";");
+
+            Assert.AreEqual(scope.Span, tracer.ActiveSpan);
+            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active);
+            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active);
+        }
+        //toDo: Check if Dispose is correctly handled
+        public void StartActiveWithBool()
+        {
+            string expectedOperationName = "Testoperation";
+            bool finishSpanAfterDispose = false;
+            Tracer tracer = new Tracer();
+            ISpanBuilder builder = tracer.BuildSpan(expectedOperationName);
+            IScope scope = builder.StartActive(finishSpanAfterDispose);
+            string[] actualSpanFields = scope.Span.ToString().Split(";");
+
+            Assert.AreEqual(scope.Span, tracer.ActiveSpan);
+            Assert.AreEqual(scope.Span, tracer.ScopeManager.Active);
+            Assert.AreEqual(tracer.ActiveSpan, tracer.ScopeManager.Active);
+        }
+        public void AddReference()
+        {
+           
+        }
+
     }
 }

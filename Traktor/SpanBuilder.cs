@@ -14,25 +14,31 @@ namespace Traktor
 
         public string operationName;
         private Tracer tracer;
+        private Dictionary<string, string> references;
 
         public  SpanBuilder(string operationName, Tracer tracer)
         {
             this.operationName = operationName;
             this.tracer = tracer;
+            this.references = new Dictionary<string, string>();
         }
 
         public ISpanBuilder AddReference(string referenceType, ISpanContext referencedContext)
         {
+            if (referencedContext == null) return this;
+            references.Add(referenceType, referencedContext.SpanId);
             return this;
         }
 
         public ISpanBuilder AsChildOf(ISpanContext parent)
         {
+            AddReference(References.ChildOf, parent);
             return this;
         }
 
         public ISpanBuilder AsChildOf(ISpan parent)
         {
+            AddReference(References.ChildOf, parent.Context);
             return this;
         }
 
@@ -87,13 +93,13 @@ namespace Traktor
         }
 
         public IScope StartActive()
-        {
-            return null;
+        { 
+            return tracer.ScopeManager.Activate(Start(), true);
         }
 
         public IScope StartActive(bool finishSpanOnDispose)
         {
-            return null;
+            return tracer.ScopeManager.Activate(Start(), finishSpanOnDispose);
         }
 
         public ISpan Start()

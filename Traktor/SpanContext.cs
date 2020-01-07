@@ -13,11 +13,20 @@ namespace Traktor
         //SpanContext Fields
         public string traceId;
         public string spanId;
+        private string referencetyp;
+       
 
         public SpanContext(string traceId, string spanId) 
         {
             this.traceId = traceId;
             this.spanId = spanId;
+            this.referencetyp = References.ChildOf;
+        }
+        public SpanContext(string traceId, string spanId, string referencetyp)
+        {
+            this.traceId = traceId;
+            this.spanId = spanId;
+            this.referencetyp = referencetyp;
         }
 
         public string TraceId { get { return traceId; } }
