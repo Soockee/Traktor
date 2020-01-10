@@ -23,7 +23,7 @@ namespace Traktor
 
         public Span(string operationName, ISpanContext spanContext, Dictionary<string, string> references)
         {
-            // startTimeStamp = 
+            startTimeStamp = DateTime.UtcNow;
             this.operationName = operationName;
             this.spanContext = spanContext;
             this.references = references;
@@ -31,6 +31,7 @@ namespace Traktor
 
         public void Finish()
         {
+            endTimeStamp = DateTime.UtcNow;
         }
 
         public void Finish(DateTimeOffset finishTimestamp)

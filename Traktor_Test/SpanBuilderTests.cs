@@ -84,6 +84,27 @@ namespace Traktor_Test
                 };
             };
         }
+        [TestMethod]
+        [Ignore]
+        public void AsChildOf()
+        {
+            string expectedOperationName_1 = "Testoperation_1";
+            string expectedOperationName_2 = "Testoperation_2";
+            Tracer tracer = new Tracer();
+            using (IScope scope = tracer.BuildSpan(expectedOperationName_1).StartActive())
+            {
+                using (IScope childScope = tracer.BuildSpan(expectedOperationName_2).AsChildOf(scope.Span.Context).StartActive())
+                {
+                    Assert.AreEqual(childScope.Span, tracer.ActiveSpan);
+                    Assert.AreNotEqual(scope.Span, tracer.ActiveSpan);
+                    Assert.AreNotEqual(scope.Span, childScope.Span);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.SpanId == childScope.Span.Context.SpanId);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.TraceId == childScope.Span.Context.TraceId);
+                    Assert.IsTrue(tracer.ActiveSpan.Context.TraceId == scope.Span.Context.TraceId);
+                    Assert.IsFalse(tracer.ActiveSpan.Context.SpanId == scope.Span.Context.SpanId);
+                };
+            };
 
+        }
     }
 }

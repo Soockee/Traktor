@@ -1,3 +1,5 @@
 steps:
   - label: Example Test
     command: echo "Hello!"
+  - name ":Build:"
+    command: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild /p:Configuration=Release $solution"

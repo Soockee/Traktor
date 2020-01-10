@@ -111,7 +111,8 @@ namespace Traktor
             }
             else
             {
-                AddReference(References.ChildOf, tracer.ScopeManager.Active.Span.Context);
+                //explicit every new span is a childspan of active if active is != null
+                this.AsChildOf(tracer.ScopeManager.Active.Span.Context);
                 traceId = tracer.ActiveSpan.Context.TraceId;
             }
             string spanID = Traktor.Util.generateNewId();

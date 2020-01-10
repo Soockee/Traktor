@@ -10,8 +10,6 @@ namespace Traktor
 {
     public sealed class Tracer: ITracer
     {
-        internal static readonly Tracer Instance = new Tracer();
-
         private IScopeManager scopemanager;
         public IScopeManager ScopeManager { get { return scopemanager; } }
         public ISpan ActiveSpan => scopemanager.Active?.Span;
