@@ -40,7 +40,7 @@ namespace Traktor
 
         public override string ToString()
         {
-            return nameof(SpanContext);
+            return traceId+";"+spanId+";"+referencetyp;
         }
 
     }
