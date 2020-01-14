@@ -117,7 +117,7 @@ namespace Traktor
             }
             string spanID = Traktor.Util.generateNewId();
             ISpanContext spanContext = new SpanContext(traceId, spanID);
-            Span span = new Span(operationName, spanContext, references);
+            Span span = new Span(operationName, spanContext, references,tracer);
             return span;
         }
 

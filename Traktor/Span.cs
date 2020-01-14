@@ -15,23 +15,32 @@ namespace Traktor
        // public static ISpan Instance = new Span("test-operation-name", ContextStatic, new Dictionary<string, string>());
 
         // Span Fields
-        public string operationName;
-        public DateTime startTimeStamp;
-        public DateTime endTimeStamp;
-        public ISpanContext spanContext;
-        public Dictionary<string, string> references;
+        private string operationName;
+        private DateTime startTimeStamp;
+        private DateTime endTimeStamp;
+        private ISpanContext spanContext;
+        private Dictionary<string, string> references;
 
-        public Span(string operationName, ISpanContext spanContext, Dictionary<string, string> references)
+        // Tracer Reference to Report Span
+        private Tracer tracer;
+
+        public Span(string operationName, ISpanContext spanContext, Dictionary<string, string> references, Tracer tracer)
         {
             startTimeStamp = DateTime.UtcNow;
             this.operationName = operationName;
             this.spanContext = spanContext;
             this.references = references;
+            this.endTimeStamp = DateTime.MinValue;
+            this.tracer = tracer;
         }
 
         public void Finish()
         {
-            endTimeStamp = DateTime.UtcNow;
+            if (endTimeStamp.Equals(DateTime.MinValue))
+            {
+                endTimeStamp = DateTime.UtcNow;
+                tracer.reporter.Report(this);
+            }
         }
 
         public void Finish(DateTimeOffset finishTimestamp)
@@ -115,8 +124,12 @@ namespace Traktor
 
         public override string ToString()
         {
-            string result = operationName + ";" + startTimeStamp.ToString() +";"+ spanContext.ToString();
-            if (endTimeStamp != null) result += ";" + endTimeStamp.ToString();
+            string dateTimeFormat = "MM/dd/yyyy hh:mm:ss.ffff tt";
+            string result = operationName + ";" + startTimeStamp.ToString(dateTimeFormat) +";"+ spanContext.ToString();
+            if (!endTimeStamp.Equals(DateTime.MinValue))
+            {
+                result += ";" + endTimeStamp.ToString(dateTimeFormat);
+            }
             return result;
         }
     }

@@ -7,18 +7,18 @@ using Traktor;
 using OpenTracing;
 namespace Traktor
 {
-    class Reporter
+    public class Reporter
     {
         private ITracer _tracer;
-        private string agentadress;
+        private string agentaddress;
         private int reporterport;
         private UdpClient agent;
-        public Reporter(string agentadress, int agentport, int reporterport,  ITracer _tracer) 
+        public Reporter(string agentaddress, int agentport, int reporterport,  ITracer _tracer) 
         {
             this._tracer = _tracer;
-            this.agentadress = agentadress;
+            this.agentaddress = agentaddress;
             this.reporterport = reporterport;
-            this.agent = Connect(agentadress, agentport);
+            this.agent = Connect(agentaddress, agentport);
         }
 
         public void Report(ISpan span) 
@@ -34,12 +34,12 @@ namespace Traktor
             }
         }
 
-        private UdpClient Connect(string agentadress, int agentport) 
+        private UdpClient Connect(string agentaddress, int agentport) 
         {
             UdpClient udpclient = new UdpClient(reporterport);
             try
             {
-                udpclient.Connect(agentadress, agentport);
+                udpclient.Connect(agentaddress, agentport);
             }
             catch (SocketException se)
             {
@@ -50,7 +50,7 @@ namespace Traktor
 
         private Byte[] BuildMessage(ISpan span) 
         {
-            return Encoding.ASCII.GetBytes(span.Context.ToString());
+            return Encoding.ASCII.GetBytes(span.ToString());
         }
     }
 }

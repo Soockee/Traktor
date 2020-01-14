@@ -58,7 +58,14 @@ namespace Traktor_Test
             string expectedOperationName_2 = "Testoperation_2";
             string expectedOperationName_3 = "Testoperation_3";
             string expectedOperationName_4 = "Testoperation_4";
+            //Configure needed to handle dispose and finish of spans
+            //Cautions: Test run parallel ->  Portusage needs to vary between tests
+            string address = "localhost";
+            int agentport = 13339;
+            int reporterport = 13340;
+
             Tracer tracer = new Tracer();
+            tracer.Configure(address, agentport, reporterport);
             IScope first_scope;
             using (IScope scope = tracer.BuildSpan(expectedOperationName_1).StartActive()) {
                 first_scope = scope;
