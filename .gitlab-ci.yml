@@ -29,11 +29,11 @@ publish:
     only:
         - master
     script:
-            - dotnet nuget push publish/*.nupkg --source $nuget_url --api-key $NUGET_API_KEY --skip-duplicate
+            - dotnet nuget push publish/*${CI_PIPELINE_ID}*.nupkg --source $nuget_url --api-key $NUGET_API_KEY --skip-duplicate
 
 cleanup:
     stage: cleanup
     only:
         - master
     script:
-            - rm publish/*.nupkg
+            - rm publish/*${CI_PIPELINE_ID}*.nupkg
