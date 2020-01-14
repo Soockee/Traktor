@@ -3,6 +3,7 @@ stages:
     - build
     - test
     - publish
+    - cleanup
 
 variables:
         solution: "Traktor.sln"
@@ -29,3 +30,10 @@ publish:
         - master
     script:
             - dotnet nuget push publish/*.nupkg --source $nuget_url --api-key $NUGET_API_KEY --skip-duplicate
+
+cleanup:
+    stage: cleanup
+    only:
+        - master
+    script:
+            - rm publish/*.nupkg
