@@ -1,4 +1,4 @@
-image: mono:latest
+image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
 stages:
     - build
@@ -7,12 +7,17 @@ stages:
 
 variables:
         solution: "Traktor.sln"
+        version: "1.0"
 
-before_script:
-    - nuget restore
 build:
-        state: build
-        script:
-                -  msbuild /p:Configuration=Release $solution
-
+    stage: build
+    only:
+        - master
+    artifacts:
+        paths:
+            - publish/
+	script:
+            - dotnet restore
+            - dotnet build /p:Version=$version -c Release  --no-restore
+            - dotnet pack  /p:Version=$Version -c Release --no-restore --no-build -o ../publish
 
