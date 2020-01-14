@@ -16,7 +16,7 @@ build:
     artifacts:
         paths:
             - publish/
-	script:
+    script:
             - dotnet restore
             - dotnet build /p:Version=$version -c Release  --no-restore
             - dotnet pack  /p:Version=$Version -c Release --no-restore --no-build -o ../publish
