@@ -7,6 +7,7 @@ stages:
 variables:
         solution: "Traktor.sln"
         version: "1.0"
+        nuget_url: https://api.nuget.org/v3/index.json
 
 build:
     stage: build
@@ -16,7 +17,10 @@ build:
         paths:
             - publish/
     script:
+            - mkdir publish/
             - dotnet restore
             - dotnet build /p:Version=$version -c Release  --no-restore
-            - dotnet pack  /p:Version=$Version -c Release --no-restore --no-build -o ../publish
+            - dotnet pack  /p:Version=$version -c Release --no-restore --no-build -o ../publish
+            - cp /builds/sstockha/publish/* publish/
+            - dotnet nuget push publish/*.nupkg --source $nuget_url --api-key $NUGET_API_KEY
 
