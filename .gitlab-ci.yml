@@ -22,5 +22,5 @@ build:
             - dotnet build /p:Version=$version -c Release  --no-restore
             - dotnet pack  /p:Version=$version -c Release --no-restore --no-build -o ../publish
             - cp /builds/sstockha/publish/* publish/
-            - dotnet nuget push publish/*.nupkg --source $nuget_url --api-key $NUGET_API_KEY
+            - dotnet nuget push publish/*.nupkg --source $nuget_url --api-key $NUGET_API_KEY --skip-duplicate
 
