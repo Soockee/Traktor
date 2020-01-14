@@ -6,7 +6,7 @@ stages:
 
 variables:
         solution: "Traktor.sln"
-        version: "1.0"
+        version: "1.${CI_PIPELINE_ID}"
         nuget_url: https://api.nuget.org/v3/index.json
 
 build:

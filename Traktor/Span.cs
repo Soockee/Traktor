@@ -130,6 +130,16 @@ namespace Traktor
             {
                 result += ";" + endTimeStamp.ToString(dateTimeFormat);
             }
+
+            if(references.Count != 0) 
+            {
+                result += "{";
+                foreach (KeyValuePair<string, string> entry in references)
+                {
+                    result += entry.Key + ":" + entry.Value;
+                }
+                result += "}";
+            }
             return result;
         }
     }
