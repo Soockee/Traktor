@@ -1,7 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+
 using Traktor;
 using Traktor.Propagation;
-
+ 
 
 using OpenTracing;
 using OpenTracing.Propagation;
@@ -39,17 +44,33 @@ namespace Traktor
 
         public void Inject<TCarrier>(ISpanContext spanContext, IFormat<TCarrier> format, TCarrier carrier)
         {
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] contextString = encoding.GetBytes(ActiveSpan.Context.ToString());
+            //memstrm.Write(contextString);
 
         }
 
         public ISpanContext Extract<TCarrier>(IFormat<TCarrier> format, TCarrier carrier)
         {
+
+            //Close Carrier Memstream
             return SpanContext.Instance;
         }
 
         public override string ToString()
         {
             return nameof(Tracer);
+        }
+
+        /* Starting with naive direct connection, should be something smarter.
+         * Messagebroker?
+         * RegistrationService?
+         * 
+         * 
+        */
+        public void Register() 
+        { 
+
         }
     }
 }
