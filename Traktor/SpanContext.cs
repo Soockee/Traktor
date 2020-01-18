@@ -11,8 +11,8 @@ namespace Traktor
         internal static readonly ISpanContext Instance = new SpanContext("0001", "9998");
 
         //SpanContext Fields
-        public string traceId;
-        public string spanId;
+        private string traceId;
+        private string spanId;
         private string referencetyp;
        
 
@@ -32,6 +32,7 @@ namespace Traktor
         public string TraceId { get { return traceId; } }
 
         public string SpanId { get {return spanId; } }
+        public string Referencetyp { get {return referencetyp; } }
 
         public IEnumerable<KeyValuePair<string, string>> GetBaggageItems()
         {

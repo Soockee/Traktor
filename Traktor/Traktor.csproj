@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Propagation\Format.cs" />
     <Compile Remove="ScopeManager.cs" />
   </ItemGroup>
 

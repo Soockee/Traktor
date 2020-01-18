@@ -3,7 +3,7 @@ using OpenTracing.Propagation;
 
 namespace Traktor.Propagation
 {
-    public class Format: IFormat<Binary>
+    public class Format: IFormat<IBinary>
     {
     }
 }

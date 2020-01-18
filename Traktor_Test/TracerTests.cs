@@ -4,7 +4,9 @@ using System;
 using System.IO;
 using System.Text;
 using Traktor.Propagation;
+using Traktor;
 using OpenTracing;
+using OpenTracing.Propagation;
 
 namespace Traktor_Test
 {
@@ -26,21 +28,27 @@ namespace Traktor_Test
             clientTracer.Configure(address, clientAgentport, clientReporterport);
 
             IScope serverscope = serverTracer.BuildSpan("Server-Operation").StartActive();
-            Format binaryformat = new Format();
-            Binary binaryCarrier = new Binary();
-            MemoryStream memstrm = new MemoryStream();
-           // ASCIIEncoding encoding = new ASCIIEncoding();
-           // byte[] contextString = encoding.GetBytes(serverscope.Span.Context.ToString());
-           // memstrm.Write(contextString);
-            binaryCarrier.Set(memstrm);
-            serverTracer.Inject<Binary>(serverscope.Span.Context, binaryformat, binaryCarrier);
-            IScope clientscope = clientTracer.BuildSpan("Client-Operation").AsChildOf(clientTracer.Extract<Binary>(binaryformat, binaryCarrier)).StartActive();
+            BinaryCarrier binaryCarrier = new BinaryCarrier();
+            serverTracer.Inject<IBinary>(serverscope.Span.Context, BuiltinFormats.Binary, binaryCarrier);
+            ISpanContext serverContext = clientTracer.Extract<IBinary>(BuiltinFormats.Binary, binaryCarrier);
+            IScope clientscope = clientTracer.BuildSpan("Client-Operation").AsChildOf(serverContext).StartActive();
             clientscope.Span.Finish();
             serverscope.Span.Finish();
 
-            Console.WriteLine(clientscope.Span.ToString());
             Console.WriteLine(serverscope.Span.ToString());
-
+            Console.WriteLine(clientscope.Span.ToString());
+        }
+        [TestMethod]
+        public void byteBufferInjectionAndExtraction() 
+        {
+            Tracer tracer1 = new Tracer();
+            Tracer tracer2 = new Tracer();
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            BinaryCarrier carrier = new BinaryCarrier();
+            var scope = tracer1.BuildSpan("kek").StartActive();       
+            tracer1.Inject(scope.Span.Context, BuiltinFormats.Binary, carrier);
+            ISpanContext context = tracer2.Extract(BuiltinFormats.Binary, carrier);
+            Assert.AreEqual(context.ToString(), scope.Span.Context.ToString());
 
         }
     }

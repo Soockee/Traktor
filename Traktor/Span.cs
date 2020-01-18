@@ -19,12 +19,12 @@ namespace Traktor
         private DateTime startTimeStamp;
         private DateTime endTimeStamp;
         private ISpanContext spanContext;
-        private Dictionary<string, string> references;
+        private List<SpanContext> references;
 
         // Tracer Reference to Report Span
         private Tracer tracer;
 
-        public Span(string operationName, ISpanContext spanContext, Dictionary<string, string> references, Tracer tracer)
+        public Span(string operationName, ISpanContext spanContext, List<SpanContext> references, Tracer tracer)
         {
             startTimeStamp = DateTime.UtcNow;
             this.operationName = operationName;
@@ -134,9 +134,9 @@ namespace Traktor
             if(references.Count != 0) 
             {
                 result += "{";
-                foreach (KeyValuePair<string, string> entry in references)
+                foreach (var entry in references)
                 {
-                    result += entry.Key + ":" + entry.Value;
+                    result += entry.SpanId + ":" + entry.Referencetyp;
                 }
                 result += "}";
             }

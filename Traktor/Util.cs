@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Traktor
 {
-    class Util
+    public class Util
     {
         private const int string_length = 12;
         public static string generateNewId()

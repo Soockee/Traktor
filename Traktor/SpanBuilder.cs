@@ -14,19 +14,19 @@ namespace Traktor
 
         public string operationName;
         private Tracer tracer;
-        private Dictionary<string, string> references;
+        private List<SpanContext> references;
 
         public  SpanBuilder(string operationName, Tracer tracer)
         {
             this.operationName = operationName;
             this.tracer = tracer;
-            this.references = new Dictionary<string, string>();
+            this.references = new List<SpanContext>();
         }
 
         public ISpanBuilder AddReference(string referenceType, ISpanContext referencedContext)
         {
             if (referencedContext == null) return this;
-            references.Add(referencedContext.SpanId, referenceType);
+            references.Add((SpanContext)referencedContext);
             return this;
         }
 
@@ -105,9 +105,13 @@ namespace Traktor
         public ISpan Start()
         {
             string traceId;
-            if ( tracer.ActiveSpan == null)
+            if ( tracer.ActiveSpan == null && references.Count==0)
             {
                 traceId = Traktor.Util.generateNewId();
+            }
+            else if (tracer.ActiveSpan == null && references.Count > 0)
+            {
+                traceId = references[0].TraceId;
             }
             else
             {
@@ -125,5 +129,5 @@ namespace Traktor
         {
             return nameof(SpanBuilder);
         }
-    }
+    }  
 }

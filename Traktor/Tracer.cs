@@ -44,17 +44,30 @@ namespace Traktor
 
         public void Inject<TCarrier>(ISpanContext spanContext, IFormat<TCarrier> format, TCarrier carrier)
         {
+            //hack to get carrier into BinaryCarrier
+            Inject(spanContext,(BinaryCarrier)(object)carrier);
+        }
+        private void Inject(ISpanContext spanContext, BinaryCarrier carrier)
+        {
             ASCIIEncoding encoding = new ASCIIEncoding();
             byte[] contextString = encoding.GetBytes(ActiveSpan.Context.ToString());
-            //memstrm.Write(contextString);
-
+            MemoryStream memstrm = new MemoryStream();
+            memstrm.Write(contextString, 0, contextString.Length);
+            carrier.Set(memstrm);
         }
 
         public ISpanContext Extract<TCarrier>(IFormat<TCarrier> format, TCarrier carrier)
         {
 
             //Close Carrier Memstream
-            return SpanContext.Instance;
+            return Extract((BinaryCarrier)(object)carrier);
+        }
+        public ISpanContext Extract( BinaryCarrier carrier)
+        {
+
+            string[] contextvars = carrier.toString().Split(';');
+            SpanContext context = new SpanContext(contextvars[0], contextvars[1],contextvars[2]);
+            return (ISpanContext)context;
         }
 
         public override string ToString()
