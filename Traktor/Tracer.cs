@@ -3,7 +3,8 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-
+using System.Threading;
+using System.Threading.Tasks;
 using Traktor;
 using Traktor.Propagation;
  
@@ -11,6 +12,7 @@ using Traktor.Propagation;
 using OpenTracing;
 using OpenTracing.Propagation;
 using OpenTracing.Util;
+using System.Net.WebSockets;
 namespace Traktor
 {
     public sealed class Tracer: ITracer
@@ -19,6 +21,7 @@ namespace Traktor
         public IScopeManager ScopeManager { get { return scopemanager; } }
         public ISpan ActiveSpan => scopemanager.Active?.Span;
         public Reporter reporter;
+        public WebSocket registry;
 
         public Tracer()
         {
@@ -82,8 +85,11 @@ namespace Traktor
          * 
         */
         public void Register() 
-        { 
+        {
+            var client = new ClientWebSocket();
+            client.ConnectAsync(new Uri("ws://localhost:44340/ws"), CancellationToken.None);
+            Console.WriteLine("Connected!");
 
-        }
+        }  
     }
 }

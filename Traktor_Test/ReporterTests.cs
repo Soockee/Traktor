@@ -50,8 +50,8 @@ namespace Traktor_Test
         {
             string expectedOperationName = "Operationname-4Head";
             string address = "localhost";
-            int agentport = 13335;
-            int reporterport = 13336;
+            int agentport = 13348;
+            int reporterport = 13347;
             // Setup Recieving Endpoint before Tracer.Reporter Connects to this Client and before Span Finish() is Called
             Task agentTast = Task.Run(() => {
                 IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);

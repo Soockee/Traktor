@@ -49,7 +49,26 @@ namespace Traktor_Test
             tracer1.Inject(scope.Span.Context, BuiltinFormats.Binary, carrier);
             ISpanContext context = tracer2.Extract(BuiltinFormats.Binary, carrier);
             Assert.AreEqual(context.ToString(), scope.Span.Context.ToString());
-
+        }
+        [TestMethod]
+        [Ignore]
+        public void broadcast_context_via_Registry()
+        {
+            Tracer tracer1 = new Tracer();
+            Tracer tracer2 = new Tracer();
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            BinaryCarrier carrier = new BinaryCarrier();
+            var scope = tracer1.BuildSpan("kek").StartActive();
+            tracer1.Inject(scope.Span.Context, BuiltinFormats.Binary, carrier);
+            ISpanContext context = tracer2.Extract(BuiltinFormats.Binary, carrier);
+            Assert.AreEqual(context.ToString(), scope.Span.Context.ToString());
+        }
+        [TestMethod]
+        public void Register()
+        {
+            Tracer tracer1 = new Tracer();
+            Tracer tracer2 = new Tracer();
+            tracer1.Register();
         }
     }
 }

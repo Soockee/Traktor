@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTracing" Version="0.12.1" />
-    <PackageReference Include="WebSocketSharp-NonPreRelease" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
