@@ -92,7 +92,9 @@ namespace Traktor
         public async Task<ClientWebSocket> Register(string url) 
         {
             ClientWebSocket registry = new ClientWebSocket();
+            registry.Options.KeepAliveInterval = TimeSpan.Zero;
             await registry.ConnectAsync(new Uri("ws://localhost:8080"), CancellationToken.None);
+
             return registry;
         }  
         public void Dispose() 

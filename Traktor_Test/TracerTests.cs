@@ -82,7 +82,37 @@ namespace Traktor_Test
             tracer.registry.SendAsync(array, WebSocketMessageType.Binary, true, token);
             tracer.registry.SendAsync(array1, WebSocketMessageType.Binary, true, token);
             tracer.registry.SendAsync(array2, WebSocketMessageType.Binary, true, token);
+        }
+        [TestMethod]
+        public void  Broadcast()
+        {
+            Tracer tracer = new Tracer();
+            tracer.Configure("ws://127.0.0.1:8080");
 
+           // Tracer tracer2 = new Tracer();
+            //tracer2.Configure("ws://127.0.0.1:8080");
+
+            string content = "SomeMessage-1";
+            string afterPrintMessage = "after";
+            byte[] array = Encoding.UTF8.GetBytes(content);
+            byte[] array1 = Encoding.UTF8.GetBytes(afterPrintMessage);
+            var buffer = new byte[4096 * 20];
+            var buffer2 = new byte[4096 * 20];
+            var _ClientBuffer = new ArraySegment<byte>(buffer);
+            tracer.registry.SendAsync(array, WebSocketMessageType.Binary, true, CancellationToken.None);
+            Task<WebSocketReceiveResult> t = tracer.registry.ReceiveAsync(_ClientBuffer, CancellationToken.None);
+            t.Wait();
+            WebSocketReceiveResult result = t.Result;
+            if(result.Count != 0 ||result.CloseStatus == WebSocketCloseStatus.Empty)
+            {
+                string message = Encoding.UTF8.GetString(_ClientBuffer.Array,
+             _ClientBuffer.Offset, result.Count);
+                Console.WriteLine(message);
+            }
+            tracer.registry.SendAsync(array1, WebSocketMessageType.Binary, true, CancellationToken.None);
+
+            tracer.Dispose();
+            // tracer2.Dispose();
         }
     }
 }
