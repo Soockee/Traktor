@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using OpenTracing;
+﻿using OpenTracing;
 using OpenTracing.Tag;
+using System;
+using System.Collections.Generic;
 
 namespace Traktor
 {
-    public sealed class Span: ISpan
+    public sealed class Span : ISpan
     {
         // Noop
         public ISpanContext Context { get { return spanContext; } }
         public static ISpanContext ContextStatic => SpanContext.Instance;
-       // public static ISpan Instance = new Span("test-operation-name", ContextStatic, new Dictionary<string, string>());
+        // public static ISpan Instance = new Span("test-operation-name", ContextStatic, new Dictionary<string, string>());
 
         // Span Fields
         private string operationName;
@@ -125,13 +123,13 @@ namespace Traktor
         public override string ToString()
         {
             string dateTimeFormat = "MM/dd/yyyy hh:mm:ss.ffff tt";
-            string result = operationName + ";" + startTimeStamp.ToString(dateTimeFormat) +";"+ spanContext.ToString();
+            string result = operationName + ";" + startTimeStamp.ToString(dateTimeFormat) + ";" + spanContext.ToString();
             if (!endTimeStamp.Equals(DateTime.MinValue))
             {
                 result += ";" + endTimeStamp.ToString(dateTimeFormat);
             }
 
-            if(references.Count != 0) 
+            if (references.Count != 0)
             {
                 result += "{";
                 foreach (var entry in references)

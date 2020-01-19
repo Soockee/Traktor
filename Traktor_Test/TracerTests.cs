@@ -1,17 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Traktor;
+using OpenTracing;
+using OpenTracing.Propagation;
 using System;
 using System.IO;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.WebSockets;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-
+using Traktor;
 using Traktor.Propagation;
-using OpenTracing;
-using OpenTracing.Propagation;
 
 namespace Traktor_Test
 {

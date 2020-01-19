@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OpenTracing;
+using System;
 using System.Net.Sockets;
-
-using Traktor;
-using OpenTracing;
+using System.Text;
 namespace Traktor
 {
     public class Reporter
@@ -13,7 +10,7 @@ namespace Traktor
         private string agentaddress;
         private int reporterport;
         private UdpClient agent;
-        public Reporter(string agentaddress, int agentport, int reporterport,  ITracer _tracer) 
+        public Reporter(string agentaddress, int agentport, int reporterport, ITracer _tracer)
         {
             this._tracer = _tracer;
             this.agentaddress = agentaddress;
@@ -21,7 +18,7 @@ namespace Traktor
             this.agent = Connect(agentaddress, agentport);
         }
 
-        public void Report(ISpan span) 
+        public void Report(ISpan span)
         {
             Byte[] message = BuildMessage(span);
             try
@@ -34,7 +31,7 @@ namespace Traktor
             }
         }
 
-        private UdpClient Connect(string agentaddress, int agentport) 
+        private UdpClient Connect(string agentaddress, int agentport)
         {
             UdpClient udpclient = new UdpClient(reporterport);
             try
@@ -48,7 +45,7 @@ namespace Traktor
             return udpclient;
         }
 
-        private Byte[] BuildMessage(ISpan span) 
+        private Byte[] BuildMessage(ISpan span)
         {
             return Encoding.ASCII.GetBytes(span.ToString());
         }

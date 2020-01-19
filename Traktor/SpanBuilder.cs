@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using OpenTracing;
+﻿using OpenTracing;
 using OpenTracing.Tag;
+using System;
+using System.Collections.Generic;
 
 
 namespace Traktor
@@ -16,7 +14,7 @@ namespace Traktor
         private Tracer tracer;
         private List<SpanContext> references;
 
-        public  SpanBuilder(string operationName, Tracer tracer)
+        public SpanBuilder(string operationName, Tracer tracer)
         {
             this.operationName = operationName;
             this.tracer = tracer;
@@ -105,7 +103,7 @@ namespace Traktor
         public ISpan Start()
         {
             string traceId;
-            if ( tracer.ActiveSpan == null && references.Count==0)
+            if (tracer.ActiveSpan == null && references.Count == 0)
             {
                 traceId = Traktor.Util.generateNewId();
             }
@@ -121,7 +119,7 @@ namespace Traktor
             }
             string spanID = Traktor.Util.generateNewId();
             ISpanContext spanContext = new SpanContext(traceId, spanID);
-            Span span = new Span(operationName, spanContext, references,tracer);
+            Span span = new Span(operationName, spanContext, references, tracer);
             return span;
         }
 
@@ -129,5 +127,5 @@ namespace Traktor
         {
             return nameof(SpanBuilder);
         }
-    }  
+    }
 }

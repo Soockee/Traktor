@@ -1,32 +1,32 @@
-﻿using System.IO;
-using System.Text;
+﻿using OpenTracing.Propagation;
 using System;
-using OpenTracing.Propagation;
+using System.IO;
+using System.Text;
 
 namespace Traktor.Propagation
 {
     [Serializable]
-    public class BinaryCarrier: IBinary, IDisposable
+    public class BinaryCarrier : IBinary, IDisposable
     {
         MemoryStream context;
 
         public BinaryCarrier()
         {
         }
-        public BinaryCarrier(MemoryStream context) 
+        public BinaryCarrier(MemoryStream context)
         {
             this.context = context;
         }
 
-        public void Set(MemoryStream stream) 
+        public void Set(MemoryStream stream)
         {
             context = stream;
         }
-        public MemoryStream Get() 
+        public MemoryStream Get()
         {
             return context;
         }
-        public string toString() 
+        public string toString()
         {
             return Encoding.ASCII.GetString(context.ToArray());
         }

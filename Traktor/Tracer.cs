@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Traktor.Propagation;
 namespace Traktor
 {
-    public sealed class Tracer: ITracer, IDisposable
+    public sealed class Tracer : ITracer, IDisposable
     {
         private IScopeManager scopemanager;
         public IScopeManager ScopeManager { get { return scopemanager; } }
@@ -28,11 +28,11 @@ namespace Traktor
         // for now all Config as Parameter
         public void Configure()
         {
-            
+
         }
-        public void Configure(string agentaddress, int agentport, int reporterport) 
+        public void Configure(string agentaddress, int agentport, int reporterport)
         {
-            reporter = new Reporter(agentaddress, agentport, reporterport,this);
+            reporter = new Reporter(agentaddress, agentport, reporterport, this);
         }
         public void Configure(string registryurl, string agentaddress, int agentport, int reporterport)
         {
@@ -53,7 +53,7 @@ namespace Traktor
         public void Inject<TCarrier>(ISpanContext spanContext, IFormat<TCarrier> format, TCarrier carrier)
         {
             //hack to get carrier into BinaryCarrier
-            Inject(spanContext,(BinaryCarrier)(object)carrier);
+            Inject(spanContext, (BinaryCarrier)(object)carrier);
         }
         private void Inject(ISpanContext spanContext, BinaryCarrier carrier)
         {
@@ -70,11 +70,11 @@ namespace Traktor
             //Close Carrier Memstream
             return Extract((BinaryCarrier)(object)carrier);
         }
-        public ISpanContext Extract( BinaryCarrier carrier)
+        public ISpanContext Extract(BinaryCarrier carrier)
         {
 
             string[] contextvars = carrier.toString().Split(';');
-            SpanContext context = new SpanContext(contextvars[0], contextvars[1],contextvars[2]);
+            SpanContext context = new SpanContext(contextvars[0], contextvars[1], contextvars[2]);
             return (ISpanContext)context;
         }
 
@@ -89,18 +89,18 @@ namespace Traktor
          * 
          * 
         */
-        public async Task<ClientWebSocket> Register(string url) 
+        public async Task<ClientWebSocket> Register(string url)
         {
             ClientWebSocket registry = new ClientWebSocket();
             registry.Options.KeepAliveInterval = TimeSpan.Zero;
             await registry.ConnectAsync(new Uri("ws://localhost:8080"), CancellationToken.None);
 
             return registry;
-        }  
-        public void Dispose() 
+        }
+        public void Dispose()
         {
             CancellationToken token = new CancellationToken();
-            registry.CloseAsync(WebSocketCloseStatus.NormalClosure,"Tracer-Client Disposed", token);
+            registry.CloseAsync(WebSocketCloseStatus.NormalClosure, "Tracer-Client Disposed", token);
         }
     }
 }
