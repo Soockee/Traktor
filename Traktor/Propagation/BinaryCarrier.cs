@@ -5,6 +5,7 @@ using OpenTracing.Propagation;
 
 namespace Traktor.Propagation
 {
+    [Serializable]
     public class BinaryCarrier: IBinary, IDisposable
     {
         MemoryStream context;
