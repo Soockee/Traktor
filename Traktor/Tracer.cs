@@ -1,27 +1,22 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using Traktor;
-using Traktor.Propagation;
- 
-
-using OpenTracing;
+﻿using OpenTracing;
 using OpenTracing.Propagation;
 using OpenTracing.Util;
+using System;
+using System.IO;
 using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Traktor.Propagation;
 namespace Traktor
 {
-    public sealed class Tracer: ITracer
+    public sealed class Tracer: ITracer, IDisposable
     {
         private IScopeManager scopemanager;
         public IScopeManager ScopeManager { get { return scopemanager; } }
         public ISpan ActiveSpan => scopemanager.Active?.Span;
         public Reporter reporter;
-        public WebSocket registry;
+        public ClientWebSocket registry;
 
         public Tracer()
         {
@@ -38,6 +33,16 @@ namespace Traktor
         public void Configure(string agentaddress, int agentport, int reporterport) 
         {
             reporter = new Reporter(agentaddress, agentport, reporterport,this);
+        }
+        public void Configure(string registryurl, string agentaddress, int agentport, int reporterport)
+        {
+            reporter = new Reporter(agentaddress, agentport, reporterport, this);
+            registry = Register(registryurl).GetAwaiter().GetResult();
+
+        }
+        public void Configure(string registryurl)
+        {
+            registry = Register(registryurl).GetAwaiter().GetResult();
         }
 
         public ISpanBuilder BuildSpan(string operationName)
@@ -84,12 +89,16 @@ namespace Traktor
          * 
          * 
         */
-        public void Register() 
+        public async Task<ClientWebSocket> Register(string url) 
         {
-            var client = new ClientWebSocket();
-            client.ConnectAsync(new Uri("ws://localhost:44340/ws"), CancellationToken.None);
-            Console.WriteLine("Connected!");
-
+            ClientWebSocket registry = new ClientWebSocket();
+            await registry.ConnectAsync(new Uri("ws://localhost:8080"), CancellationToken.None);
+            return registry;
         }  
+        public void Dispose() 
+        {
+            CancellationToken token = new CancellationToken();
+            registry.CloseAsync(WebSocketCloseStatus.NormalClosure,"Tracer-Client Disposed", token);
+        }
     }
 }

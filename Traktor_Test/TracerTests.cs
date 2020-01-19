@@ -3,8 +3,11 @@ using Traktor;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Net.WebSockets;
+
 using Traktor.Propagation;
-using Traktor;
 using OpenTracing;
 using OpenTracing.Propagation;
 
@@ -64,11 +67,22 @@ namespace Traktor_Test
             Assert.AreEqual(context.ToString(), scope.Span.Context.ToString());
         }
         [TestMethod]
+        [Ignore]
         public void Register()
         {
-            Tracer tracer1 = new Tracer();
-            Tracer tracer2 = new Tracer();
-            tracer1.Register();
+            Tracer tracer = new Tracer();
+            tracer.Configure("ws://127.0.0.1:8080");
+            string content = "SomeMessage-1";
+            string content1 = "SomeMessage-2";
+            string content2 = "SomeMessage-3";
+            byte[] array = Encoding.ASCII.GetBytes(content);
+            byte[] array1 = Encoding.ASCII.GetBytes(content1);
+            byte[] array2 = Encoding.ASCII.GetBytes(content2);
+            CancellationToken token = new CancellationToken();
+            tracer.registry.SendAsync(array, WebSocketMessageType.Binary, true, token);
+            tracer.registry.SendAsync(array1, WebSocketMessageType.Binary, true, token);
+            tracer.registry.SendAsync(array2, WebSocketMessageType.Binary, true, token);
+
         }
     }
 }
