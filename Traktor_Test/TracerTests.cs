@@ -70,7 +70,9 @@ namespace Traktor_Test
         public void Register()
         {
             Tracer tracer = new Tracer();
-            tracer.Configure("ws://127.0.0.1:8080");
+            string address = "127.0.0.1";
+            string port = "8080";
+            tracer.Configure(address,port);
             string content = "SomeMessage-1";
             string content1 = "SomeMessage-2";
             string content2 = "SomeMessage-3";
@@ -86,10 +88,12 @@ namespace Traktor_Test
         public void Broadcast_Context()
         {
             Tracer tracer = new Tracer();
-            tracer.Configure("ws://127.0.0.1:8080");
+            string address = "127.0.0.1";
+            string port = "8080";
+            tracer.Configure(address, port);
 
             Tracer tracer2 = new Tracer();
-            tracer2.Configure("ws://127.0.0.1:8080");
+            tracer2.Configure(address, port);
 
             BinaryCarrier carrier_beginning = new BinaryCarrier();
             var scope = tracer.BuildSpan("kek").StartActive();
@@ -139,10 +143,12 @@ namespace Traktor_Test
         public void  Broadcast_strings()
         {
             Tracer tracer = new Tracer();
-            tracer.Configure("ws://127.0.0.1:8080");
+            string address = "127.0.0.1";
+            string port = "8080";
+            tracer.Configure(address, port);
 
             Tracer tracer2 = new Tracer();
-            tracer2.Configure("ws://127.0.0.1:8080");
+            tracer2.Configure(address, port);
 
             string content = "SomeMessage-1";
             byte[] array = Encoding.UTF8.GetBytes(content);
