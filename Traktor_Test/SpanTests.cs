@@ -41,6 +41,13 @@ namespace Traktor_Test
             ISpan span = tracer.BuildSpan("operationname").Start();
 
             span.Finish();
+            Assert.IsNull(tracer.ActiveSpan);
+            using( var scope = tracer.BuildSpan("somename").StartActive())
+            {
+                Assert.IsNotNull(tracer.ActiveSpan);
+
+            }
+            Assert.IsNull(tracer.ActiveSpan);
             Assert.AreNotEqual(DateTime.MinValue, DateTime.Parse(span.ToString().Split(";")[5]));
             string[] actualSpanFields = span.ToString().Split(";");
             string actualOperationName = actualSpanFields[0];

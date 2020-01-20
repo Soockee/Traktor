@@ -79,6 +79,7 @@ namespace Traktor_Test
             IScope scope2 = tracer.BuildSpan(expectedOperationName).StartActive();
             scope2.Span.Finish();
             scope.Span.Finish();
+
             agentTast.Wait();      
         }
     }

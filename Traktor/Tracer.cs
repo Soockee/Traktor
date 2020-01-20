@@ -34,15 +34,15 @@ namespace Traktor
         {
             reporter = new Reporter(agentaddress, agentport, reporterport, this);
         }
-        public void Configure(string registryurl, string agentaddress, int agentport, int reporterport)
+        public void Configure(string registryadress, string registryport, string agentaddress, int agentport, int reporterport)
         {
             reporter = new Reporter(agentaddress, agentport, reporterport, this);
-            registry = Register(registryurl).GetAwaiter().GetResult();
+            registry = Register(registryadress, registryport).GetAwaiter().GetResult();
 
         }
-        public void Configure(string registryurl)
+        public void Configure(string registryadress, string registryport)
         {
-            registry = Register(registryurl).GetAwaiter().GetResult();
+            registry = Register(registryadress, registryport).GetAwaiter().GetResult();
         }
 
         public ISpanBuilder BuildSpan(string operationName)
@@ -89,11 +89,11 @@ namespace Traktor
          * 
          * 
         */
-        public async Task<ClientWebSocket> Register(string url)
+        public async Task<ClientWebSocket> Register(string url,string port)
         {
             ClientWebSocket registry = new ClientWebSocket();
             registry.Options.KeepAliveInterval = TimeSpan.Zero;
-            await registry.ConnectAsync(new Uri("ws://localhost:8080"), CancellationToken.None);
+            await registry.ConnectAsync(new Uri("ws://"+url+":"+ port), CancellationToken.None);
 
             return registry;
         }
