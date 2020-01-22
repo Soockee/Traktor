@@ -24,7 +24,7 @@ namespace Traktor_Test
                 IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
                 UdpClient agent = new UdpClient(agentport);
                 Byte[] recieveBytes = agent.Receive(ref RemoteIpEndPoint);
-                string spanContent = Encoding.ASCII.GetString(recieveBytes);
+                string spanContent = Encoding.UTF8.GetString(recieveBytes);
                 // Uses the IPEndPoint object to determine which of these two hosts responded.
                 // Output can be used to comprehend the communication
                 Console.WriteLine("This is the message you received " +
@@ -59,7 +59,7 @@ namespace Traktor_Test
                 for(int i = 0; i < 2; ++i)
                 {
                     Byte[] recieveBytes = agent.Receive(ref RemoteIpEndPoint);
-                    string spanContent = Encoding.ASCII.GetString(recieveBytes);
+                    string spanContent = Encoding.UTF8.GetString(recieveBytes);
                     // Uses the IPEndPoint object to determine which of these two hosts responded.
                     // Output can be used to comprehend the communication
                     Console.WriteLine("This is the message you received " +
@@ -81,6 +81,21 @@ namespace Traktor_Test
             scope.Span.Finish();
 
             agentTast.Wait();      
+        }
+        [TestMethod]
+        [Ignore]
+        public void Report_LargeSpan()
+        {
+            Tracer tracer = new Tracer();
+            string address = "127.0.0.1";
+            int port = 8080;
+            int agentport = 13337;
+
+            tracer.Configure(address, agentport, port);     
+            ISpanContext context = new SpanContext("123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123", "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
+            var span = tracer.BuildSpan("opnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTESTopnameTEST").AsChildOf(context).Start();
+            tracer.ScopeManager.Activate(span,true);
+            span.Finish();
         }
     }
 }

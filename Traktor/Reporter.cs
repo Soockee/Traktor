@@ -47,7 +47,7 @@ namespace Traktor
 
         private Byte[] BuildMessage(ISpan span)
         {
-            return Encoding.ASCII.GetBytes(span.ToString());
+            return Encoding.UTF8.GetBytes(span.ToString());
         }
     }
 }

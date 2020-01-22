@@ -57,7 +57,7 @@ namespace Traktor
         }
         private void Inject(ISpanContext spanContext, BinaryCarrier carrier)
         {
-            ASCIIEncoding encoding = new ASCIIEncoding();
+            UTF8Encoding encoding = new UTF8Encoding();
             byte[] contextString = encoding.GetBytes(ActiveSpan.Context.ToString());
             MemoryStream memstrm = new MemoryStream();
             memstrm.Write(contextString, 0, contextString.Length);
