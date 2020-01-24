@@ -193,5 +193,21 @@ namespace Traktor_Test
             tracer.Dispose();
             tracer2.Dispose();
         }
+        [TestMethod]
+        [Ignore]
+        public void ReceiveAndSendContext_viaRegistry()
+        {
+            string address = "127.0.0.1";
+            string port = "8080";
+            Tracer tracer1 = new Tracer();
+            Tracer tracer2 = new Tracer();    
+            tracer1.Configure(address, port);
+            tracer2.Configure(address, port);
+
+            var scope = tracer1.BuildSpan("kek").StartActive();
+            tracer1.SendContext(scope.Span).GetAwaiter().GetResult();
+            ISpanContext ctx = tracer2.ReceiveContext().GetAwaiter().GetResult();
+            Assert.AreEqual(ctx.ToString(), scope.Span.Context.ToString());
+        }
     }
 }
