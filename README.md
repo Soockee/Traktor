@@ -1,3 +1,5 @@
+![Nuget](https://img.shields.io/nuget/v/Traktor)
+
 # C# Client for Traktor
 * Implements C# Opentracing API
 * Supports netstandard2.0
@@ -43,7 +45,7 @@ The [TraktorRegistry](https://geocode.igd.fraunhofer.de/sstockha/traktorregistry
 Gracefull shutdown of the websocketclients is not implemented. The application will most likely raise runtime errors, if the registry shuts down after the connection was established.
 
 ### Spans, Spanbuilder, Scopes and Scopemanager
-Building a unactivated Span:
+Building an unactivated Span:
 
 ```
 var operationname = "example_function";
